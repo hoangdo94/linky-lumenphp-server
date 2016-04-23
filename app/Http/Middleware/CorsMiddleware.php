@@ -98,5 +98,5 @@ class CorsMiddleware
     $this->setCorsHeaders($request, $response);
     return $response;
   }
-  
+
 }
