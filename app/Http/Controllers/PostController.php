@@ -32,7 +32,7 @@ class PostController extends Controller{
             return response()->json($Post);
         }
   
-        return response()->json(['status' => '0']);
+        return response()->json(Post::all());
     }
 
     public function createPost(Request $request){
