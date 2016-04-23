@@ -14,3 +14,36 @@
 $app->get('/', function () use ($app) {
     return $app->version();
 });
+
+$app->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], function($app)
+{
+    $app->get('post','PostController@index');
+  
+    $app->get('post/{id}','PostController@getPost');
+      
+    $app->post('post','PostController@createPost');
+      
+    $app->put('post/{id}','PostController@updatePost');
+      
+    $app->delete('post/{id}','PostController@deletePost');
+
+    $app->get('type','TypeController@index');
+  
+    $app->get('type/{id}','TypeController@getType');
+      
+    $app->post('type','TypeController@createType');
+      
+    $app->put('type/{id}','TypeController@updateType');
+      
+    $app->delete('type/{id}','TypeController@deleteType');
+
+    $app->get('category','CategoryController@index');
+  
+    $app->get('category/{id}','CategoryController@getCategory');
+      
+    $app->post('category','CategoryController@createCategory');
+      
+    $app->put('category/{id}','CategoryController@updateCategory');
+      
+    $app->delete('category/{id}','CategoryController@deleteCategory');
+});
