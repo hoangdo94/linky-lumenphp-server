@@ -27,6 +27,8 @@ $app->group(['prefix' => 'api','namespace' => 'App\Http\Controllers'], function(
     $app->get('post/{id}','PostController@getPost');
       
     $app->post('post','PostController@createPost');
+
+    $app->get('post','PostController@getPostFromUserId');
       
     $app->put('post/{id}','PostController@updatePost');
       

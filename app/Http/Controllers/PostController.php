@@ -24,7 +24,17 @@ class PostController extends Controller{
   
         return response()->json($Post);
     }
+
+    public function getPostFromUserId(Request $request){
   
+        if ($request->has('user_id')) {
+            $Post = Post::where('user_id', $request->input('user_id'))->get();
+            return response()->json($Post);
+        }
+  
+        return response()->json(['status' => '0']);
+    }
+
     public function createPost(Request $request){
   
         $Post = Post::create($request->all());
