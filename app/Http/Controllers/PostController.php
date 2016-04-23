@@ -32,7 +32,7 @@ class PostController extends Controller{
             return response()->json($Post);
         }
   
-        return response()->json(Post::all());
+        return response()->json(Post::leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user','post.user_id', '=', 'user.id')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name')->get());
     }
 
     public function createPost(Request $request){
