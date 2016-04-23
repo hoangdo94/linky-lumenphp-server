@@ -15,8 +15,13 @@ $app->get('/', function () use ($app) {
     return $app->version();
 });
 
-$app->group(['prefix' => 'api/v1','namespace' => 'App\Http\Controllers'], function($app)
+$app->group(['prefix' => 'api','namespace' => 'App\Http\Controllers'], function($app)
 {
+    $app->get('users','UsersController@index');
+    $app->get('users/{id}','UsersController@get');
+    $app->post('users','UsersController@create');
+    $app->put('users/{id}','UsersController@update');
+    $app->delete('users/{id}','UsersController@delete');
     $app->get('post','PostController@index');
   
     $app->get('post/{id}','PostController@getPost');
