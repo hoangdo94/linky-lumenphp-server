@@ -1,0 +1,1 @@
+php artian db:seed

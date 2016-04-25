@@ -15,42 +15,47 @@ $app->get('/', function () use ($app) {
     return $app->version();
 });
 
-$app->group(['prefix' => 'api','namespace' => 'App\Http\Controllers'], function($app)
-{
-    $app->get('users','UsersController@index');
-    $app->get('users/{id}','UsersController@get');
-    $app->post('users','UsersController@create');
-    $app->put('users/{id}','UsersController@update');
-    $app->delete('users/{id}','UsersController@delete');
-    $app->get('post','PostController@index');
-  
-    $app->get('post/{id}','PostController@getPost');
-      
-    $app->post('post','PostController@createPost');
+$api = app('Dingo\Api\Routing\Router');
 
-    $app->get('post','PostController@getPostFromUserId');
-      
-    $app->put('post/{id}','PostController@updatePost');
-      
-    $app->delete('post/{id}','PostController@deletePost');
+$api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
 
-    $app->get('type','TypeController@index');
-  
-    $app->get('type/{id}','TypeController@getType');
-      
-    $app->post('type','TypeController@createType');
-      
-    $app->put('type/{id}','TypeController@updateType');
-      
-    $app->delete('type/{id}','TypeController@deleteType');
+      $api->get('users',['middleware' => 'auth', 'uses' => 'UsersController@index']);
+      $api->get('users/{id}','UsersController@get');
+      $api->post('users','UsersController@create');
+      $api->put('users/{id}','UsersController@update');
+      $api->delete('users/{id}','UsersController@delete');
 
-    $app->get('category','CategoryController@index');
-  
-    $app->get('category/{id}','CategoryController@getCategory');
-      
-    $app->post('category','CategoryController@createCategory');
-      
-    $app->put('category/{id}','CategoryController@updateCategory');
-      
-    $app->delete('category/{id}','CategoryController@deleteCategory');
+      $api->post('auth', ['middleware' => 'auth', 'uses' => 'AuthController@authenticate']);
+
+      $api->get('post','PostController@index');
+
+      $api->get('post/{id}','PostController@getPost');
+
+      $api->post('post','PostController@createPost');
+
+      $api->get('post/user/{:id}','PostController@getPostFromUserId');
+
+      $api->put('post/{id}','PostController@updatePost');
+
+      $api->delete('post/{id}','PostController@deletePost');
+
+      $api->get('type','TypeController@index');
+
+      $api->get('type/{id}','TypeController@getType');
+
+      $api->post('type','TypeController@createType');
+
+      $api->put('type/{id}','TypeController@updateType');
+
+      $api->delete('type/{id}','TypeController@deleteType');
+
+      $api->get('category','CategoryController@index');
+
+      $api->get('category/{id}','CategoryController@getCategory');
+
+      $api->post('category','CategoryController@createCategory');
+
+      $api->put('category/{id}','CategoryController@updateCategory');
+
+      $api->delete('category/{id}','CategoryController@deleteCategory');
 });
