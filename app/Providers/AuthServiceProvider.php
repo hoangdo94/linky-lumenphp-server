@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Log;
+use DB;
 use App\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -32,8 +34,16 @@ class AuthServiceProvider extends ServiceProvider
         // the User instance via an API token or any other method necessary.
 
         Auth::viaRequest('api', function ($request) {
-            if ($request->input('api_token')) {
-                return User::where('api_token', $request->input('api_token'))->first();
+            if ($request->header('Authorization')) {
+                $authHeader = trim(str_replace('Basic ', '', $request->header('Authorization')));
+                list($username, $password) = explode(':', base64_decode($authHeader));
+                $user = User::where('username', $username)->first();
+                if ($user) {
+                  $hashedPwd = DB::table('user')->where('username', $username)->first()->password;
+                  if (app('hash')->check($password, $hashedPwd)) {
+                    return $user;
+                  }
+                }
             }
         });
     }

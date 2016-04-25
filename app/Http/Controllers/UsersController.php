@@ -23,23 +23,25 @@ class UsersController extends Controller
     }
 
     public function get($id) {
-      $user = User::find($id);
+      $user = User::findOrFail($id);
       return response()->json($user);
     }
 
     public function create(Request $request) {
       $user = User::create($request->all());
+      $user->password = app('hash')->make($request->input('password'));
+      $user->save();
       return response()->json($user);
     }
 
     public function delete($id) {
-      $user = User::find($id);
+      $user = User::findOrFail($id);
       $user->delete();
       return response()->json('Deleted');
     }
 
     public function update(Request $request, $id) {
-      $user  = user::find($id);
+      $user  = User::findOrFail($id);
       $user->save();
       return response()->json('Updated');
     }
