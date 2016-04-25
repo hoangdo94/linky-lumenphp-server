@@ -24,6 +24,9 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->post('users','UsersController@create');
       $api->put('users/{id}','UsersController@update');
       $api->delete('users/{id}','UsersController@delete');
+
+      $api->post('auth', ['middleware' => 'auth', 'uses' => 'AuthController@authenticate']);
+
       $api->get('post','PostController@index');
 
       $api->get('post/{id}','PostController@getPost');

@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Log;
 use DB;
 use App\User;
 use Illuminate\Support\Facades\Auth;
