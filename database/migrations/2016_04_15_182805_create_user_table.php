@@ -19,6 +19,7 @@ class CreateUserTable extends Migration
             $table->string('password', 20);
             $table->string('website', 255);
             $table->string('title', 255);
+            $table->string('phone', 20);
             $table->boolean('isAdmin');
             $table->integer('num_followers');
             $table->integer('num_followings');
