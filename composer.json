@@ -8,7 +8,10 @@
         "php": ">=5.5.9",
         "laravel/lumen-framework": "5.2.*",
         "vlucas/phpdotenv": "~2.2",
-        "dingo/api": "1.0.x@dev"
+        "dingo/api": "1.0.x@dev",
+        "league/flysystem": " ~1.0",
+        "nordsoftware/lumen-file-manager": "^1.1",
+        "league/flysystem-rackspace": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

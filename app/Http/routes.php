@@ -58,4 +58,8 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->put('category/{id}','CategoryController@updateCategory');
 
       $api->delete('category/{id}','CategoryController@deleteCategory');
+
+      $api->post('file', '\App\Http\Controllers\FileEntryController@saveFile');
+      $api->get('file/{id}', '\App\Http\Controllers\FileEntryController@getFile');
+      $api->delete('file/{id}', '\App\Http\Controllers\FileEntryController@deleteFile');
 });
