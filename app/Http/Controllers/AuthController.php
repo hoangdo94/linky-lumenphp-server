@@ -8,9 +8,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
 
-class AuthController extends Controller{
-    public function authenticate(){
+class AuthController extends Controller {
+
+    public function __construct() {
+        $this->middleware('auth');
+    }
+
+    public function authenticate() {
         $user = Auth::user();
         return response()->json($user);
     }
+
 }

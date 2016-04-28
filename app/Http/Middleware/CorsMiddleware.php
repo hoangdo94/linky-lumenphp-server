@@ -17,7 +17,7 @@ class CorsMiddleware
     $origin = $this->settings['origin'];
     if (is_callable($origin)) {
       // Call origin callback with request origin
-      $origin = call_user_func($origin, $req->header("Origin"));
+      $origin = call_user_func($origin, $req->header('Origin'));
     }
     $rsp->header('Access-Control-Allow-Origin', $origin);
   }
@@ -26,7 +26,7 @@ class CorsMiddleware
     if (isset($this->settings->exposeHeaders)) {
       $exposeHeaders = $this->settings->exposeHeaders;
       if (is_array($exposeHeaders)) {
-        $exposeHeaders = implode(", ", $exposeHeaders);
+        $exposeHeaders = implode(', ', $exposeHeaders);
       }
       $rsp->header('Access-Control-Expose-Headers', $exposeHeaders);
     }
@@ -48,7 +48,7 @@ class CorsMiddleware
     if (isset($this->settings['allowMethods'])) {
       $allowMethods = $this->settings['allowMethods'];
       if (is_array($allowMethods)) {
-        $allowMethods = implode(", ", $allowMethods);
+        $allowMethods = implode(', ', $allowMethods);
       }
       $rsp->header('Access-Control-Allow-Methods', $allowMethods);
     }
@@ -58,10 +58,10 @@ class CorsMiddleware
     if (isset($this->settings['allowHeaders'])) {
       $allowHeaders = $this->settings['allowHeaders'];
       if (is_array($allowHeaders)) {
-        $allowHeaders = implode(", ", $allowHeaders);
+        $allowHeaders = implode(', ', $allowHeaders);
       }
     } else {  // Otherwise, use request headers
-      $allowHeaders = $req->header("Access-Control-Request-Headers");
+      $allowHeaders = $req->header('Access-Control-Request-Headers');
     }
     if (isset($allowHeaders)) {
       $rsp->header('Access-Control-Allow-Headers', $allowHeaders);
@@ -93,7 +93,7 @@ class CorsMiddleware
   */
   public function handle($request, Closure $next) {
     if ($request->isMethod('OPTIONS')) {
-      $response = new Response("", 200);
+      $response = new Response('', 200);
     } else {
       $response = $next($request);
     }

@@ -1,10 +1,10 @@
 <?php
- 
+
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
- 
+
 class CreateFileEntryTable extends Migration {
- 
+
     /**
      * Run the migrations.
      *
@@ -12,7 +12,7 @@ class CreateFileEntryTable extends Migration {
      */
     public function up()
     {
-        Schema::create('FileEntry', function(Blueprint $table)
+        Schema::create('file_entry', function(Blueprint $table)
         {
             $table->increments('id');
             $table->string('filename');
@@ -21,7 +21,7 @@ class CreateFileEntryTable extends Migration {
             $table->timestamps();
         });
     }
- 
+
     /**
      * Reverse the migrations.
      *
@@ -29,8 +29,7 @@ class CreateFileEntryTable extends Migration {
      */
     public function down()
     {
-        Schema::drop('FileEntry');
- 
+        Schema::drop('file_entry');
     }
- 
+
 }

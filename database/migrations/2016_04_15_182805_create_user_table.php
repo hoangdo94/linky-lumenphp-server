@@ -23,9 +23,11 @@ class CreateUserTable extends Migration
             $table->boolean('isAdmin');
             $table->integer('num_followers');
             $table->integer('num_followings');
-            $table->string('avatar', 255);
-            $table->string('background', 255);
+            $table->integer('avatar_id')->unsigned()->nullable();
+            $table->integer('cover_id')->unsigned()->nullable();
             $table->timestamps();
+            $table->foreign('avatar_id')->references('id')->on('file_entry')->onDelete('set null');
+            $table->foreign('cover_id')->references('id')->on('file_entry')->onDelete('set null');
         });
     }
 

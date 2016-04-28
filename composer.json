@@ -1,7 +1,7 @@
 {
-    "name": "laravel/lumen",
-    "description": "The Laravel Lumen Framework.",
-    "keywords": ["framework", "laravel", "lumen"],
+    "name": "Linky",
+    "description": "By Sharers, For Sharers.",
+    "keywords": ["link", "social", "network"],
     "license": "MIT",
     "type": "project",
     "require": {
@@ -10,7 +10,6 @@
         "vlucas/phpdotenv": "~2.2",
         "dingo/api": "1.0.x@dev",
         "league/flysystem": " ~1.0",
-        "nordsoftware/lumen-file-manager": "^1.1",
         "league/flysystem-rackspace": "^1.0"
     },
     "require-dev": {
