@@ -68,7 +68,11 @@ class PostsController extends Controller {
     }
 
     public function delete($id) {
+        $user = Auth::user();
         $Post  = Post::findOrFail($id);
+        if ($user->cannot('modify-post')) {
+            throw new AccessDeniedHttpException('No permission');
+        }
         $Post->delete();
         return response()->json([
             'message' => 'Deleted post',
@@ -78,7 +82,11 @@ class PostsController extends Controller {
     }
 
     public function update(Request $request,$id) {
+        $user = Auth::user();
         $Post  = Post::findOrFail($id);
+        if ($user->cannot('modify-post')) {
+            throw new AccessDeniedHttpException('No permission');
+        }
         if ($request->has('cate_id')) {
             $Post->cate_id = $request->input('cate_id');
         }
