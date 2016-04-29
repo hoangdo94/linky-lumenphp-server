@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Auth;
 use App\Post;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 
@@ -22,8 +22,11 @@ class PostsController extends Controller {
     }
 
     public function index() {
-        $Posts  = Post::all();
-        return response()->json($Posts);
+        if (Request::has('user_id')) {
+            $Post = Post::where('user_id', Request::input('user_id'))->get();
+            return response()->json($Post);
+        }
+        return response()->json(Post::leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user','post.user_id', '=', 'user.id')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name')->get());
     }
 
     public function get($id) {
@@ -31,15 +34,7 @@ class PostsController extends Controller {
         return response()->json($Post);
     }
 
-    public function getPostFromUserId(Request $request) {
-        if ($request->has('user_id')) {
-            $Post = Post::where('user_id', $request->input('user_id'))->get();
-            return response()->json($Post);
-        }
-        return response()->json(Post::leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user','post.user_id', '=', 'user.id')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name')->get());
-    }
-
-    public function create(Request $request) {
+    public function create() {
         $rules = [
             'cate_id' => ['required', 'exists:category,id'],
             'type_id' => ['required', 'exists:type,id'],
@@ -47,18 +42,18 @@ class PostsController extends Controller {
             'link' => ['required'],
             'content' => ['required']
         ];
-        $validator = app('validator')->make($request->all(), $rules);
+        $validator = app('validator')->make(Request::all(), $rules);
         if ($validator->fails()) {
             throw new StoreResourceFailedException('Could not create new post.', $validator->errors());
         }
         $user = Auth::user();
         $Post = Post::create([
             'user_id' => $user->id,
-            'cate_id' => $request->input('cate_id'),
-            'type_id' => $request->input('type_id'),
-            'thumb_id' => $request->input('thumb_id'),
-            'link' => $request->input('link'),
-            'content' => $request->input('content')
+            'cate_id' => Request::input('cate_id'),
+            'type_id' => Request::input('type_id'),
+            'thumb_id' => Request::input('thumb_id'),
+            'link' => Request::input('link'),
+            'content' => Request::input('content')
         ]);
         return response()->json([
             'message' => 'Created post',
@@ -81,26 +76,26 @@ class PostsController extends Controller {
         ]);
     }
 
-    public function update(Request $request,$id) {
+    public function update($id) {
         $user = Auth::user();
         $Post  = Post::findOrFail($id);
         if ($user->cannot('modify-post')) {
             throw new AccessDeniedHttpException('No permission');
         }
         if ($request->has('cate_id')) {
-            $Post->cate_id = $request->input('cate_id');
+            $Post->cate_id = Request::input('cate_id');
         }
         if ($request->has('type_id')) {
-            $Post->type_id = $request->input('type_id');
+            $Post->type_id = Request::input('type_id');
         }
         if ($request->has('thumb_id')) {
-            $Post->type_id = $request->input('thumb_id');
+            $Post->type_id = Request::input('thumb_id');
         }
         if ($request->has('link')) {
-            $Post->link = $request->input('link');
+            $Post->link = Request::input('link');
         }
         if ($request->has('content')) {
-            $Post->content = $request->input('content');
+            $Post->content = Request::input('content');
         }
         $Post->save();
         return response()->json([
