@@ -33,7 +33,8 @@ class UsersController extends Controller {
         $rules = [
             'username' => ['required', 'unique:user'],
             'email' => ['required', 'email', 'unique:user'],
-            'password' => ['required', 'min:6']
+            'password' => ['required', 'min:6'],
+            'website' => ['url']
         ];
         $validator = app('validator')->make($request->all(), $rules);
         if ($validator->fails()) {
