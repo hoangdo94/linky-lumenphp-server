@@ -41,4 +41,9 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->post('follows', '\App\Http\Controllers\FollowsController@create');
       $api->get('follows', '\App\Http\Controllers\FollowsController@index');
       $api->delete('follows/{id}', '\App\Http\Controllers\FollowsController@delete');
+
+      $api->get('likes', '\App\Http\Controllers\LikesController@index');
+      $api->post('likes', '\App\Http\Controllers\LikesController@create');
+      $api->get('likes/{id}', '\App\Http\Controllers\LikesController@get');
+      $api->delete('likes/{id}', '\App\Http\Controllers\LikesController@delete');
 });
