@@ -19,7 +19,6 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->get('posts', 'PostsController@index');
       $api->get('posts/{id}', 'PostsController@get');
       $api->post('posts', 'PostsController@create');
-      $api->get('posts/user/{id}', 'PostsController@getPostFromUserId');
       $api->post('posts/{id}', 'PostsController@update');
       $api->delete('posts/{id}', 'PostsController@delete');
 
@@ -38,4 +37,13 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->post('files', '\App\Http\Controllers\FileEntriesController@upload');
       $api->get('files/{id}', '\App\Http\Controllers\FileEntriesController@get');
       $api->delete('files/{id}', '\App\Http\Controllers\FileEntriesController@delete');
+
+      $api->post('follows', '\App\Http\Controllers\FollowsController@create');
+      $api->get('follows', '\App\Http\Controllers\FollowsController@index');
+      $api->delete('follows/{id}', '\App\Http\Controllers\FollowsController@delete');
+
+      $api->get('likes', '\App\Http\Controllers\LikesController@index');
+      $api->post('likes', '\App\Http\Controllers\LikesController@create');
+      $api->get('likes/{id}', '\App\Http\Controllers\LikesController@get');
+      $api->delete('likes/{id}', '\App\Http\Controllers\LikesController@delete');
 });

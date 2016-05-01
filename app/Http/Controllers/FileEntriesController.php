@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Log;
 use App\FileEntry;
 
 class FileEntriesController extends BaseController {
@@ -19,6 +20,7 @@ class FileEntriesController extends BaseController {
     }
 
     public function upload() {
+        Log::info('1');
         $file = Request::file('file');
         $extension = $file->getClientOriginalExtension();
         Storage::disk('local')->put($file->getFilename().'.'.$extension,  File::get($file));
