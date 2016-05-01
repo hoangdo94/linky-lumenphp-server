@@ -39,7 +39,7 @@ class PostsController extends Controller {
             'cate_id' => ['required', 'exists:category,id'],
             'type_id' => ['required', 'exists:type,id'],
             'thumb_id' => ['required', 'exists:file_entry,id'],
-            'link' => ['required'],
+            'link' => ['required', 'url'],
             'content' => ['required']
         ];
         $validator = app('validator')->make(Request::all(), $rules);
