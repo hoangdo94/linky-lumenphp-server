@@ -6,7 +6,6 @@ use Auth;
 use App\Follow;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
-use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 
