@@ -13,9 +13,9 @@ class CreatePreferCategoryTable extends Migration
     public function up()
     {
         Schema::create('prefer_category', function (Blueprint $table) {
-            $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->integer('cate_id')->unsigned();
+            $table->primary(['user_id', 'cate_id']);
             $table->foreign('user_id')->references('id')->on('user')->onDelete('cascade');
             $table->foreign('cate_id')->references('id')->on('category')->onDelete('cascade');
         });

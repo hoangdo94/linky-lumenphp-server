@@ -52,4 +52,8 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->post('comments', 'CommentsController@create');
       $api->post('comments/{id}', 'CommentsController@update');
       $api->delete('comments/{id}', 'CommentsController@delete');
+
+      $api->get('prefer_categories', '\App\Http\Controllers\PreferCategoriesController@index');
+      $api->post('prefer_categories', '\App\Http\Controllers\PreferCategoriesController@create');
+      $api->delete('prefer_categories/{id}', '\App\Http\Controllers\PreferCategoriesController@delete');
 });
