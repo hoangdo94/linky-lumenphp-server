@@ -16,8 +16,8 @@ class CreateMetaTable extends Migration
             $table->increments('id');
             $table->string('link', 255);
             $table->integer('thumb_id')->unsigned();
-            $table->string('title', 255);
-            $table->string('description', 4000);
+            $table->string('title', 255)->default('No title');
+            $table->string('description', 4000)->default('No description');
             $table->timestamps();
             $table->foreign('thumb_id')->references('id')->on('file_entry')->onDelete('cascade');
         });

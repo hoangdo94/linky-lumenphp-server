@@ -34,18 +34,18 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->post('categories/{id}', 'CategoriesController@update');
       $api->delete('categories/{id}', 'CategoriesController@delete');
 
-      $api->post('files', '\App\Http\Controllers\FileEntriesController@upload');
-      $api->get('files/{id}', '\App\Http\Controllers\FileEntriesController@get');
-      $api->delete('files/{id}', '\App\Http\Controllers\FileEntriesController@delete');
+      $api->post('files', 'FileEntriesController@upload');
+      $api->get('files/{id}', 'FileEntriesController@get');
+      $api->delete('files/{id}', 'FileEntriesController@delete');
 
-      $api->post('follows', '\App\Http\Controllers\FollowsController@create');
-      $api->get('follows', '\App\Http\Controllers\FollowsController@index');
-      $api->delete('follows/{id}', '\App\Http\Controllers\FollowsController@delete');
+      $api->post('follows', 'FollowsController@create');
+      $api->get('follows', 'FollowsController@index');
+      $api->delete('follows/{id}', 'FollowsController@delete');
 
-      $api->get('likes', '\App\Http\Controllers\LikesController@index');
-      $api->post('likes', '\App\Http\Controllers\LikesController@create');
-      $api->get('likes/{id}', '\App\Http\Controllers\LikesController@get');
-      $api->delete('likes/{id}', '\App\Http\Controllers\LikesController@delete');
+      $api->get('likes', 'LikesController@index');
+      $api->post('likes', 'LikesController@create');
+      $api->get('likes/{id}', 'LikesController@get');
+      $api->delete('likes/{id}', 'LikesController@delete');
 
       $api->get('comments', 'CommentsController@index');
       $api->get('comments/{id}', 'CommentsController@get');
@@ -53,7 +53,9 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->post('comments/{id}', 'CommentsController@update');
       $api->delete('comments/{id}', 'CommentsController@delete');
 
-      $api->get('prefer_categories', '\App\Http\Controllers\PreferCategoriesController@index');
-      $api->post('prefer_categories', '\App\Http\Controllers\PreferCategoriesController@create');
-      $api->delete('prefer_categories/{id}', '\App\Http\Controllers\PreferCategoriesController@delete');
+      $api->get('prefer_categories', 'PreferCategoriesController@index');
+      $api->post('prefer_categories', 'PreferCategoriesController@create');
+      $api->delete('prefer_categories/{id}', 'PreferCategoriesController@delete');
+
+      $api->get('meta', 'MetaController@get');
 });

@@ -10,7 +10,8 @@
         "vlucas/phpdotenv": "~2.2",
         "dingo/api": "1.0.x@dev",
         "league/flysystem": " ~1.0",
-        "league/flysystem-rackspace": "^1.0"
+        "league/flysystem-rackspace": "^1.0",
+        "sunra/php-simple-html-dom-parser": "^1.5"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
