@@ -46,4 +46,10 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->post('likes', '\App\Http\Controllers\LikesController@create');
       $api->get('likes/{id}', '\App\Http\Controllers\LikesController@get');
       $api->delete('likes/{id}', '\App\Http\Controllers\LikesController@delete');
+
+      $api->get('comments', 'CommentsController@index');
+      $api->get('comments/{id}', 'CommentsController@get');
+      $api->post('comments', 'CommentsController@create');
+      $api->post('comments/{id}', 'CommentsController@update');
+      $api->delete('comments/{id}', 'CommentsController@delete');
 });

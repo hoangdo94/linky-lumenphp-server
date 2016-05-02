@@ -82,19 +82,19 @@ class PostsController extends Controller {
         if ($user->cannot('modify-post')) {
             throw new AccessDeniedHttpException('No permission');
         }
-        if ($request->has('cate_id')) {
+        if (Request::has('cate_id')) {
             $Post->cate_id = Request::input('cate_id');
         }
-        if ($request->has('type_id')) {
+        if (Request::has('type_id')) {
             $Post->type_id = Request::input('type_id');
         }
-        if ($request->has('thumb_id')) {
+        if (Request::has('thumb_id')) {
             $Post->type_id = Request::input('thumb_id');
         }
-        if ($request->has('link')) {
+        if (Request::has('link')) {
             $Post->link = Request::input('link');
         }
-        if ($request->has('content')) {
+        if (Request::has('content')) {
             $Post->content = Request::input('content');
         }
         $Post->save();
