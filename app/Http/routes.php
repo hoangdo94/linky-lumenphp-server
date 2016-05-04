@@ -57,5 +57,5 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->post('prefer_categories', 'PreferCategoriesController@create');
       $api->delete('prefer_categories/{id}', 'PreferCategoriesController@delete');
 
-      $api->get('meta', 'MetaController@get');
+      $api->post('meta', 'MetaController@get');
 });
