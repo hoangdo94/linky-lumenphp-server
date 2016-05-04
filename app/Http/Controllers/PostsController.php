@@ -23,10 +23,10 @@ class PostsController extends Controller {
 
     public function index() {
         if (Request::has('user_id')) {
-            $Post = Post::where('user_id', Request::input('user_id'))->leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user','post.user_id', '=', 'user.id')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name')->get();
+            $Post = Post::where('user_id', Request::input('user_id'))->leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user','post.user_id', '=', 'user.id')->orderBy('created_at', 'desc')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name')->get();
             return response()->json($Post);
         }
-        return response()->json(Post::leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user','post.user_id', '=', 'user.id')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name')->get());
+        return response()->json(Post::leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user','post.user_id', '=', 'user.id')->orderBy('created_at', 'desc')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name')->get());
     }
 
     public function get($id) {
@@ -38,8 +38,7 @@ class PostsController extends Controller {
         $rules = [
             'cate_id' => ['required', 'exists:category,id'],
             'type_id' => ['required', 'exists:type,id'],
-            'thumb_id' => ['required', 'exists:file_entry,id'],
-            'link' => ['required', 'url'],
+            'meta_id' => ['required', 'exists:meta,id'],
             'content' => ['required']
         ];
         $validator = app('validator')->make(Request::all(), $rules);
@@ -51,8 +50,7 @@ class PostsController extends Controller {
             'user_id' => $user->id,
             'cate_id' => Request::input('cate_id'),
             'type_id' => Request::input('type_id'),
-            'thumb_id' => Request::input('thumb_id'),
-            'link' => Request::input('link'),
+            'meta_id' => Request::input('meta_id'),
             'content' => Request::input('content')
         ]);
         return response()->json([

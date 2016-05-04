@@ -11,7 +11,8 @@
         "dingo/api": "1.0.x@dev",
         "league/flysystem": " ~1.0",
         "league/flysystem-rackspace": "^1.0",
-        "sunra/php-simple-html-dom-parser": "^1.5"
+        "sunra/php-simple-html-dom-parser": "^1.5",
+        "microweber/screen": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
