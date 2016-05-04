@@ -38,8 +38,7 @@ class PostsController extends Controller {
         $rules = [
             'cate_id' => ['required', 'exists:category,id'],
             'type_id' => ['required', 'exists:type,id'],
-            'thumb_id' => ['required', 'exists:file_entry,id'],
-            'link' => ['required', 'url'],
+            'meta_id' => ['required', 'exists:meta,id'],
             'content' => ['required']
         ];
         $validator = app('validator')->make(Request::all(), $rules);
@@ -51,8 +50,7 @@ class PostsController extends Controller {
             'user_id' => $user->id,
             'cate_id' => Request::input('cate_id'),
             'type_id' => Request::input('type_id'),
-            'thumb_id' => Request::input('thumb_id'),
-            'link' => Request::input('link'),
+            'meta_id' => Request::input('meta_id'),
             'content' => Request::input('content')
         ]);
         return response()->json([
@@ -88,11 +86,8 @@ class PostsController extends Controller {
         if (Request::has('type_id')) {
             $Post->type_id = Request::input('type_id');
         }
-        if (Request::has('thumb_id')) {
-            $Post->type_id = Request::input('thumb_id');
-        }
-        if (Request::has('link')) {
-            $Post->link = Request::input('link');
+        if (Request::has('meta_id')) {
+            $Post->meta_id = Request::input('meta_id');
         }
         if (Request::has('content')) {
             $Post->content = Request::input('content');
