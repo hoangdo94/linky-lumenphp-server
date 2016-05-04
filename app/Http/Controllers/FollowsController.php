@@ -35,11 +35,11 @@ class FollowsController extends Controller {
                     type = 1: get follower list of user
                     type = 2: get following list of user
                 */
-                if ($type == '1'){
+                if ($type == '1' && $user_id != $user->id){
                     $Follow = Follow::where('user_id', $user_id)->leftJoin('user', 'follow.follower_id', '=', 'user.id')->select('user.*')->get();
                     return response()->json($Follow);
-                }
-                else {
+                } 
+                else if ($type == '2' && $user_id != $user->id) {
                     $Follow = Follow::where('follower_id', $user_id)->leftJoin('user', 'follow.user_id', '=', 'user.id')->select('user.*')->get();
                     return response()->json($Follow);
                 }
