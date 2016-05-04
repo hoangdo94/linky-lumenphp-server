@@ -25,6 +25,25 @@ class FollowsController extends Controller {
         $user = Auth::user();
         if (Request::has('type')) {
             $type = Request::input('type');
+
+            // Get followers/following of 'someone' user
+            // Not ony current user, FUCK OFF!
+            if (Request::has('user_id')) {
+                $user_id = Request::input('user_id');
+
+                /*
+                    type = 1: get follower list of user
+                    type = 2: get following list of user
+                */
+                if ($type == '1'){
+                    $Follow = Follow::where('user_id', $user_id)->leftJoin('user', 'follow.follower_id', '=', 'user.id')->select('user.*')->get();
+                    return response()->json($Follow);
+                }
+                else {
+                    $Follow = Follow::where('follower_id', $user_id)->leftJoin('user', 'follow.user_id', '=', 'user.id')->select('user.*')->get();
+                    return response()->json($Follow);
+                }
+            }
             /*
                 type = 1: get follower list of user
                 type = 2: get following list of user
