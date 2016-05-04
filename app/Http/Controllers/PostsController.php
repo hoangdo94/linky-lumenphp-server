@@ -86,11 +86,8 @@ class PostsController extends Controller {
         if (Request::has('type_id')) {
             $Post->type_id = Request::input('type_id');
         }
-        if (Request::has('thumb_id')) {
-            $Post->type_id = Request::input('thumb_id');
-        }
-        if (Request::has('link')) {
-            $Post->link = Request::input('link');
+        if (Request::has('meta_id')) {
+            $Post->meta_id = Request::input('meta_id');
         }
         if (Request::has('content')) {
             $Post->content = Request::input('content');
