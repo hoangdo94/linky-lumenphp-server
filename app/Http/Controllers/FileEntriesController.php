@@ -54,5 +54,4 @@ class FileEntriesController extends BaseController {
             'Content-Type' => $entry->mime
         ]);
     }
-
 }

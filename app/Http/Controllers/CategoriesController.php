@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use App\Category;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Request;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class CategoriesController extends Controller {
 
@@ -29,8 +30,11 @@ class CategoriesController extends Controller {
         return response()->json($Category);
     }
 
-    public function create(Request $request) {
-        $Category = Category::create($request->all());
+    public function create() {
+        $user = Auth::user();
+        if ($user->isAdmin != 1)
+            throw new AccessDeniedHttpException('No permission');
+        $Category = Category::create(Request::all());
         return response()->json([
             'message' => 'Created category',
             'status_code' => '200',
@@ -39,6 +43,9 @@ class CategoriesController extends Controller {
     }
 
     public function delete($id) {
+        $user = Auth::user();
+        if ($user->isAdmin != 1)
+            throw new AccessDeniedHttpException('No permission');
         $Category  = Category::findOrFail($id);
         $Category->delete();
         return response()->json([
@@ -48,9 +55,12 @@ class CategoriesController extends Controller {
         ]);
     }
 
-    public function update(Request $request,$id) {
+    public function update($id) {
+        $user = Auth::user();
+        if ($user->isAdmin != 1)
+            throw new AccessDeniedHttpException('No permission');
         $Category  = Category::findOrFail($id);
-        $Category->name = $request->input('name');
+        $Category->name = Request::input('name');
         $Category->save();
         return response()->json([
             'message' => 'Updated category',
