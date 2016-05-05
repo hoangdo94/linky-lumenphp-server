@@ -11,8 +11,7 @@ class FileEntryTableSeeder extends Seeder
     {
         DB::table('file_entry')->insert([
             'filename' => 'default.png',
-            'mime' => 'image/png',
-            'original_filename' => 'default.png'
+            'mime' => 'image/png'
         ]);
     }
 }
