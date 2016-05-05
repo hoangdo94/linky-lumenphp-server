@@ -72,8 +72,7 @@ class MetaController extends Controller {
         //save into file entry table
         $fileEntry = FileEntry::create([
             'filename' => $filename,
-            'mime' => 'image/jpeg',
-            'original_filename' => $filename
+            'mime' => 'image/jpeg'
         ]);
 
         //update meta
