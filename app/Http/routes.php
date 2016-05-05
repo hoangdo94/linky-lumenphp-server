@@ -35,7 +35,6 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
       $api->delete('categories/{id}', 'CategoriesController@delete');
 
       $api->post('files', 'FileEntriesController@upload');
-      $api->post('files/{id}', 'FileEntriesController@test');
       $api->get('files/{id}', 'FileEntriesController@get');
       $api->delete('files/{id}', 'FileEntriesController@delete');
 

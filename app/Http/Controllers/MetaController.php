@@ -9,8 +9,6 @@ use Illuminate\Http\Request;
 use Dingo\Api\Exception\ResourceException;
 use Sunra\PhpSimple\HtmlDomParser;
 use Screen\Capture;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 
 class MetaController extends Controller {
 
