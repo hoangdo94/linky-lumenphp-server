@@ -17,7 +17,6 @@ class CreateFileEntryTable extends Migration {
             $table->increments('id');
             $table->string('filename');
             $table->string('mime');
-            $table->string('original_filename');
             $table->timestamps();
         });
     }

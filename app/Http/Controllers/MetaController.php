@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Meta;
+use App\FileEntry;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Dingo\Api\Exception\ResourceException;
 use Sunra\PhpSimple\HtmlDomParser;
+use Screen\Capture;
 
 class MetaController extends Controller {
 
@@ -45,12 +47,37 @@ class MetaController extends Controller {
           $description = $descriptionElems[0]->content;
         }
 
+        //need to save first, if we cannot get screenshot
         $newMeta = Meta::create([
           'link' => $link,
           'title' => $title,
           'description' => $description,
           'thumb_id' => 1
         ]);
+
+        //done getting metadata, now get screenshot
+        $screenCapture = new Capture($link);
+
+        $screenCapture->setWidth(1200);
+        $screenCapture->setHeight(800);
+        $screenCapture->setClipWidth(1200);
+        $screenCapture->setClipHeight(800);
+
+        $screenCapture->setBackgroundColor('#ffffff');
+
+        $filename = 'screenshot'.getdate()[0].'.jpg';
+        $fileLocation = '../storage/app/'.$filename;
+        $screenCapture->save($fileLocation);
+
+        //save into file entry table
+        $fileEntry = FileEntry::create([
+            'filename' => $filename,
+            'mime' => 'image/jpeg'
+        ]);
+
+        //update meta
+        $newMeta->thumb_id = $fileEntry->id;
+        $newMeta->save();
 
         return response()->json($newMeta);
     }

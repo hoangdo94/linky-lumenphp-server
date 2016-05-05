@@ -20,13 +20,11 @@ class FileEntriesController extends BaseController {
     }
 
     public function upload() {
-        Log::info('1');
         $file = Request::file('file');
         $extension = $file->getClientOriginalExtension();
         Storage::disk('local')->put($file->getFilename().'.'.$extension,  File::get($file));
         $entry = new Fileentry();
         $entry->mime = $file->getClientMimeType();
-        $entry->original_filename = $file->getClientOriginalName();
         $entry->filename = $file->getFilename().'.'.$extension;
         $entry->save();
         return response()->json([
@@ -54,5 +52,4 @@ class FileEntriesController extends BaseController {
             'Content-Type' => $entry->mime
         ]);
     }
-
 }
