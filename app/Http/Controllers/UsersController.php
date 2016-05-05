@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Log;
 use Auth;
 use App\User;
 use Illuminate\Http\Request;
@@ -30,6 +31,7 @@ class UsersController extends Controller {
     }
 
     public function create(Request $request) {
+      Log::info($request->input('phone'));
         $rules = [
             'username' => ['required', 'unique:user'],
             'email' => ['required', 'email', 'unique:user'],
