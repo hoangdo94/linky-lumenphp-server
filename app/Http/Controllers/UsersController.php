@@ -73,6 +73,12 @@ class UsersController extends Controller {
             throw new AccessDeniedHttpException('No permission');
         }
 
+        if ($request->has('avatar_id')) {
+            $User->avatar_id = $request->input('avatar_id');
+        }
+        if ($request->has('cover_id')) {
+            $User->cover_id = $request->input('cover_id');
+        }
         if ($request->has('password')) {
             $User->password = app('hash')->make($request->input('password'));
         }
