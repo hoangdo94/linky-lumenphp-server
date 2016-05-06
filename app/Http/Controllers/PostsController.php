@@ -24,10 +24,10 @@ class PostsController extends Controller {
 
     public function index() {
         if (Request::has('user_id')) {
-            $Post = Post::where('user_id', Request::input('user_id'))->leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user', 'post.user_id', '=', 'user.id')->leftJoin('meta', 'post.meta_id', '=', 'meta.id')->orderBy('created_at', 'desc')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name', 'meta.title', 'meta.link', 'meta.description', 'meta.thumb_id')->get();
+            $Post = Post::where('user_id', Request::input('user_id'))->leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user', 'post.user_id', '=', 'user.id')->leftJoin('meta', 'post.meta_id', '=', 'meta.id')->orderBy('created_at', 'desc')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name', 'meta.title', 'meta.link', 'meta.description', 'meta.thumb_id')->paginate(Request::has('perPage')? Request::input('perPage') : 10);
             return response()->json($Post);
         }
-        return response()->json(Post::leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user','post.user_id', '=', 'user.id')->leftJoin('meta', 'post.meta_id', '=', 'meta.id')->orderBy('created_at', 'desc')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name', 'meta.title', 'meta.link', 'meta.description', 'meta.thumb_id')->get());
+        return response()->json(Post::leftJoin('type', 'post.type_id', '=', 'type.id')->leftJoin('category','post.cate_id', '=', 'category.id')->leftJoin('user','post.user_id', '=', 'user.id')->leftJoin('meta', 'post.meta_id', '=', 'meta.id')->orderBy('created_at', 'desc')->select('post.*', 'username', 'category.name AS cate_name', 'type.name AS type_name', 'meta.title', 'meta.link', 'meta.description', 'meta.thumb_id')->paginate(Request::has('perPage')? Request::input('perPage') : 10));
     }
 
     public function get($id) {

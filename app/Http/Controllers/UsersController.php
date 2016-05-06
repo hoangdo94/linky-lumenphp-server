@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Log;
 use Auth;
 use App\User;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 
@@ -21,7 +21,7 @@ class UsersController extends Controller {
     }
 
     public function index() {
-        $Users = User::all();
+        $Users = User::paginate(Request::has('perPage')? Request::input('perPage') : 10);
         return response()->json($Users);
     }
 
@@ -30,20 +30,19 @@ class UsersController extends Controller {
         return response()->json($User);
     }
 
-    public function create(Request $request) {
-      Log::info($request->input('phone'));
+    public function create() {
         $rules = [
             'username' => ['required', 'unique:user'],
             'email' => ['required', 'email', 'unique:user'],
             'password' => ['required', 'min:6'],
             'website' => ['url']
         ];
-        $validator = app('validator')->make($request->all(), $rules);
+        $validator = app('validator')->make(Request::all(), $rules);
         if ($validator->fails()) {
             throw new StoreResourceFailedException('Could not create new user.', $validator->errors());
         }
-        $User = User::create($request->all());
-        $User->password = app('hash')->make($request->input('password'));
+        $User = User::create(Request::all());
+        $User->password = app('hash')->make(Request::input('password'));
         $User->save();
         return response()->json([
             'message' => 'Created user',
@@ -66,30 +65,30 @@ class UsersController extends Controller {
         ]);
     }
 
-    public function update(Request $request, $id) {
+    public function update($id) {
         $authUser = Auth::user();
         $User  = User::findOrFail($id);
         if ($authUser->cannot('modify-user', $User)) {
             throw new AccessDeniedHttpException('No permission');
         }
 
-        if ($request->has('avatar_id')) {
-            $User->avatar_id = $request->input('avatar_id');
+        if (Request::has('avatar_id')) {
+            $User->avatar_id = Request::input('avatar_id');
         }
-        if ($request->has('cover_id')) {
-            $User->cover_id = $request->input('cover_id');
+        if (Request::has('cover_id')) {
+            $User->cover_id = Request::input('cover_id');
         }
-        if ($request->has('password')) {
-            $User->password = app('hash')->make($request->input('password'));
+        if (Request::has('password')) {
+            $User->password = app('hash')->make(Request::input('password'));
         }
-        if ($request->has('website')) {
-            $User->website = $request->input('website');
+        if (Request::has('website')) {
+            $User->website = Request::input('website');
         }
-        if ($request->has('title')) {
-            $User->title = $request->input('title');
+        if (Request::has('title')) {
+            $User->title = Request::input('title');
         }
-        if ($request->has('phone')) {
-            $User->phone = $request->input('phone');
+        if (Request::has('phone')) {
+            $User->phone = Request::input('phone');
         }
         $User->save();
         return response()->json([
