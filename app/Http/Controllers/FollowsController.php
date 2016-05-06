@@ -75,6 +75,10 @@ class FollowsController extends Controller {
             return response()->json([
                 'message' => 'Cannot follow yourself'
             ]);
+        if (Follow::where('user_id', '=', Request::input('id'))->where('follower_id', '=', $user->id)->count() == 1)
+            return response()->json([
+                'message' => 'already followed this user'
+            ]);
         $Follow = Follow::create([
             'user_id' => Request::input('id'),
             'follower_id' => $user->id

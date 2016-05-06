@@ -61,6 +61,11 @@ class LikesController extends Controller {
             throw new StoreResourceFailedException('Post_id not found.', $validator->errors());
         }
         $user = Auth::user();
+        //check exist
+        if (Like::where('user_id', '=', $user->id)->where('post_id', '=', Request::input('id'))->count() == 1)
+            return response()->json([
+                'message' => 'already liked this post'
+            ]);
         //create new like
         $Like = Like::create([
             'user_id' => $user->id,
