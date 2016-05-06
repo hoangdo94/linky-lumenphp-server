@@ -6,6 +6,7 @@ use Auth;
 use App\Post;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 use Dingo\Api\Exception\StoreResourceFailedException;
 
@@ -63,7 +64,7 @@ class PostsController extends Controller {
     public function delete($id) {
         $user = Auth::user();
         $Post  = Post::findOrFail($id);
-        if ($user->cannot('modify-post')) {
+        if ($user->isAdmin != 1 && $user->id != $Post->user_id) {
             throw new AccessDeniedHttpException('No permission');
         }
         $Post->delete();
@@ -77,7 +78,9 @@ class PostsController extends Controller {
     public function update($id) {
         $user = Auth::user();
         $Post  = Post::findOrFail($id);
-        if ($user->cannot('modify-post')) {
+        Log::info($user->id);
+        Log::info($Post->user_id);
+        if ($user->isAdmin != 1 && $user->id != $Post->user_id) {
             throw new AccessDeniedHttpException('No permission');
         }
         if (Request::has('cate_id')) {
