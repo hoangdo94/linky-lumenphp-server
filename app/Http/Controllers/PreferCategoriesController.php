@@ -40,7 +40,7 @@ class PreferCategoriesController extends Controller {
         $prefer_categories->delete();
 
         foreach (Request::all() as $key => $value) {
-            $cate = Category::where('name', $value)->firstOrFail();
+            $cate = Category::where('name', $value['name'])->firstOrFail();
             PreferCategory::create([
                 'user_id' => $user->id,
                 'cate_id' => $cate->id
