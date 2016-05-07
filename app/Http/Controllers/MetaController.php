@@ -58,10 +58,31 @@ class MetaController extends Controller {
         ]);
 
         //done getting metadata, now get first img or screenshot if no img found
+        $og = $dom->find('meta[property="og:image"]') ? $dom->find('meta[property="og:image"]') : $dom->find('meta[property="og:image:url"]');
         $img = $dom->find('img');
         $filename = '';
         $mime_type = '';
-        if (count($img) > 0) {
+        if (count($og) > 0) {
+            $file = file_get_contents($og[0]->content);
+            //get mime type of img
+            $file_info = new finfo(FILEINFO_MIME_TYPE);
+            $mime_type = $file_info->buffer($file);
+
+            //get filename
+            $url_arr = explode ('/', $og[0]->content);
+            $name = $url_arr[count($url_arr)-1];
+            $name_div = explode('.', $name);
+            $filename = '';
+            for ($i=0; $i < count($name_div) - 1; $i++) { 
+                $filename = $filename.$name_div[$i];
+            }
+            $img_type = $name_div[count($name_div)-1];
+
+            $filename = $filename.getdate()[0].'.'.$img_type;
+            $fileLocation = '../storage/app/'.$filename;
+            file_put_contents($fileLocation, $file);
+        }
+        else if (count($img) > 0) {
             $file = file_get_contents($img[0]->src);
             //get mime type of img
             $file_info = new finfo(FILEINFO_MIME_TYPE);
