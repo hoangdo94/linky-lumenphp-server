@@ -85,8 +85,6 @@ class PostsController extends Controller {
     public function update($id) {
         $user = Auth::user();
         $Post  = Post::findOrFail($id);
-        Log::info($user->id);
-        Log::info($Post->user_id);
         if ($user->isAdmin != 1 && $user->id != $Post->user_id) {
             throw new AccessDeniedHttpException('No permission');
         }
