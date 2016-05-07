@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\PreferCategory;
+use App\Category;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Request;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
@@ -34,12 +35,17 @@ class PreferCategoriesController extends Controller {
     */
     public function create() {
         $user = Auth::user();
-        $cate_ids = explode(',', Request::input('id'));
+        //delete old prefer_categories
+        $prefer_categories = PreferCategory::where('user_id', $user->id);
+        $prefer_categories->delete();
 
-        for ($i=0; $i < count($cate_ids); $i++) { 
+        $cates = explode(',', Request::input('categories'));
+
+        for ($i=0; $i < count($cates); $i++) {
+            $cate = Category::where('name', $cates[$i])->firstOrFail();
             PreferCategory::create([
                 'user_id' => $user->id,
-                'cate_id' => (int) $cate_ids[$i]
+                'cate_id' => $cate->id
             ]);
         }
         
