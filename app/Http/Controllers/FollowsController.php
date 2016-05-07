@@ -37,11 +37,17 @@ class FollowsController extends Controller {
                     type = 2: get following list of user
                 */
                 if ($type == '1' && $user_id != $user->id){
-                    $Follow = Follow::where('user_id', $user_id)->leftJoin('user', 'follow.follower_id', '=', 'user.id')->select('user.*')->get();
+                    $Follow = Follow::where('user_id', $user_id)->leftJoin('user', 'follow.follower_id', '=', 'user.id')->select('user.*')->paginate(Request::has('perPage')? Request::input('perPage') : 10);
+                    if (Request::has('perPage')) {
+                        $Follow->appends(array('perPage' => Request::input('perPage')))->links();
+                    }
                     return response()->json($Follow);
                 } 
                 else if ($type == '2' && $user_id != $user->id) {
-                    $Follow = Follow::where('follower_id', $user_id)->leftJoin('user', 'follow.user_id', '=', 'user.id')->select('user.*')->get();
+                    $Follow = Follow::where('follower_id', $user_id)->leftJoin('user', 'follow.user_id', '=', 'user.id')->select('user.*')->paginate(Request::has('perPage')? Request::input('perPage') : 10);
+                    if (Request::has('perPage')) {
+                        $Follow->appends(array('perPage' => Request::input('perPage')))->links();
+                    }
                     return response()->json($Follow);
                 }
             }
@@ -50,15 +56,24 @@ class FollowsController extends Controller {
                 type = 2: get following list of user
             */
             if ($type == '1'){
-                $Follow = Follow::where('user_id', $user->id)->leftJoin('user', 'follow.follower_id', '=', 'user.id')->select('user.*')->get();
+                $Follow = Follow::where('user_id', $user->id)->leftJoin('user', 'follow.follower_id', '=', 'user.id')->select('user.*')->paginate(Request::has('perPage')? Request::input('perPage') : 10);
+                if (Request::has('perPage')) {
+                    $Follow->appends(array('perPage' => Request::input('perPage')))->links();
+                }
                 return response()->json($Follow);
             }
             else {
-                $Follow = Follow::where('follower_id', $user->id)->leftJoin('user', 'follow.user_id', '=', 'user.id')->select('user.*')->get();
+                $Follow = Follow::where('follower_id', $user->id)->leftJoin('user', 'follow.user_id', '=', 'user.id')->select('user.*')->paginate(Request::has('perPage')? Request::input('perPage') : 10);
+                if (Request::has('perPage')) {
+                    $Follow->appends(array('perPage' => Request::input('perPage')))->links();
+                }
                 return response()->json($Follow);
             }
         }
-        $Follow  = Follow::all();
+        $Follow  = Follow::paginate(Request::has('perPage')? Request::input('perPage') : 10);
+        if (Request::has('perPage')) {
+            $Follow->appends(array('perPage' => Request::input('perPage')))->links();
+        }
         return response()->json($Follow);
     }
 

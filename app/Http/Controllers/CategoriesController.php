@@ -21,8 +21,18 @@ class CategoriesController extends Controller {
     }
 
     public function index() {
-        $Categories  = Category::all();
-        return response()->json($Categories);
+        if (!Request::has('perPage') && !Request::has('page')) {
+            $Categories  = Category::all();
+            return response()->json($Categories);    
+        }
+        else {
+            //pagination
+            $Categories = Category::paginate(Request::has('perPage')? Request::input('perPage') : 10);
+            if (Request::has('perPage')) {
+                $Categories->appends(array('perPage' => Request::input('perPage')))->links();
+            }
+            return response()->json($Categories);
+        }
     }
 
     public function get($id) {

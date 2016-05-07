@@ -26,7 +26,7 @@ class CommentsController extends Controller {
     */
     public function index() {
         if (Request::has('id')) {
-            $Comment = Comment::where('post_id', '=', Request::input('id'))->leftJoin('user', 'comment.user_id', '=', 'user.id')->select('comment.*', 'user.username')->get();
+            $Comment = Comment::where('post_id', '=', Request::input('id'))->leftJoin('user', 'comment.user_id', '=', 'user.id')->select('comment.*', 'user.username', 'user.avatar_id')->get();
             return response()->json($Comment);    
         }
     }

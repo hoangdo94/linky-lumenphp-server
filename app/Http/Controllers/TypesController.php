@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Type;
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Request;
 
 
 class TypesController extends Controller {
@@ -20,8 +20,17 @@ class TypesController extends Controller {
     }
 
     public function index() {
-        $Types  = Type::all();
-        return response()->json($Types);
+        if (!Request::has('perPage') && !Request::has('page')) {
+            $Types  = Type::all();
+            return response()->json($Types);
+        }
+        else {
+            $Types = Type::paginate(Request::has('perPage')? Request::input('perPage') : 10);
+            if (Request::has('perPage')) {
+                $Types->appends(array('perPage' => Request::input('perPage')))->links();
+            }
+            return response()->json($Types);
+        }
     }
 
     public function get($id) {
@@ -29,8 +38,11 @@ class TypesController extends Controller {
         return response()->json($Type);
     }
 
-    public function create(Request $request) {
-        $Type = Type::create($request->all());
+    public function create() {
+        $user = Auth::user();
+        if ($user->isAdmin != 1)
+            throw new AccessDeniedHttpException('No permission');
+        $Type = Type::create(Request::all());
         return response()->json([
             'message' => 'Created type',
             'status_code' => '200',
@@ -39,6 +51,9 @@ class TypesController extends Controller {
     }
 
     public function delete($id) {
+        $user = Auth::user();
+        if ($user->isAdmin != 1)
+            throw new AccessDeniedHttpException('No permission');
         $Type  = Type::findOrFail($id);
         $Type->delete();
         return response()->json([
@@ -48,9 +63,12 @@ class TypesController extends Controller {
         ]);
     }
 
-    public function update(Request $request,$id) {
+    public function update($id) {
+        $user = Auth::user();
+        if ($user->isAdmin != 1)
+            throw new AccessDeniedHttpException('No permission');
         $Type  = Type::findOrFail($id);
-        $Type->name = $request->input('name');
+        $Type->name = Request::input('name');
         $Type->save();
         return response()->json([
             'message' => 'Created type',
