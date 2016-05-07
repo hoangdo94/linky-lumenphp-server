@@ -39,15 +39,22 @@ class PreferCategoriesController extends Controller {
         $prefer_categories = PreferCategory::where('user_id', $user->id);
         $prefer_categories->delete();
 
-        $cates = explode(',', Request::input('categories'));
-
-        for ($i=0; $i < count($cates); $i++) {
-            $cate = Category::where('name', $cates[$i])->firstOrFail();
+        foreach (Request::all() as $key => $value) {
+            $cate = Category::where('name', $value)->firstOrFail();
             PreferCategory::create([
                 'user_id' => $user->id,
                 'cate_id' => $cate->id
             ]);
         }
+        // $cates = explode(',', Request::input('categories'));
+
+        // for ($i=0; $i < count(Request::all()); $i++) {
+        //     $cate = Category::where('name', $cates[$i])->firstOrFail();
+        //     PreferCategory::create([
+        //         'user_id' => $user->id,
+        //         'cate_id' => $cate->id
+        //     ]);
+        // }
         
         return response()->json([
             'message' => 'Created PreferCategory',
