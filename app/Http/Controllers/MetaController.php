@@ -9,6 +9,8 @@ use Illuminate\Http\Request;
 use Dingo\Api\Exception\ResourceException;
 use Sunra\PhpSimple\HtmlDomParser;
 use Screen\Capture;
+use Illuminate\Support\Facades\Log;
+use finfo;
 
 class MetaController extends Controller {
 
@@ -55,24 +57,51 @@ class MetaController extends Controller {
           'thumb_id' => 1
         ]);
 
-        //done getting metadata, now get screenshot
-        $screenCapture = new Capture($link);
+        //done getting metadata, now get first img or screenshot if no img found
+        $img = $dom->find('img');
+        $filename = '';
+        $mime_type = '';
+        if (count($img) > 0) {
+            $file = file_get_contents($img[0]->src);
+            //get mime type of img
+            $file_info = new finfo(FILEINFO_MIME_TYPE);
+            $mime_type = $file_info->buffer($file);
 
-        $screenCapture->setWidth(1200);
-        $screenCapture->setHeight(800);
-        $screenCapture->setClipWidth(1200);
-        $screenCapture->setClipHeight(800);
+            //get filename
+            $url_arr = explode ('/', $img[0]->src);
+            $name = $url_arr[count($url_arr)-1];
+            $name_div = explode('.', $name);
+            $filename = '';
+            for ($i=0; $i < count($name_div) - 1; $i++) { 
+                $filename = $filename.$name_div[$i];
+            }
+            $img_type = $name_div[count($name_div)-1];
 
-        $screenCapture->setBackgroundColor('#ffffff');
+            $filename = $filename.getdate()[0].'.'.$img_type;
+            $fileLocation = '../storage/app/'.$filename;
+            file_put_contents($fileLocation, $file);
+        }
+        else {
+            $screenCapture = new Capture($link);
 
-        $filename = 'screenshot'.getdate()[0].'.jpg';
-        $fileLocation = '../storage/app/'.$filename;
-        $screenCapture->save($fileLocation);
+            $screenCapture->setWidth(1200);
+            $screenCapture->setHeight(800);
+            $screenCapture->setClipWidth(1200);
+            $screenCapture->setClipHeight(800);
 
+            $screenCapture->setBackgroundColor('#ffffff');
+
+            $filename = 'screenshot'.getdate()[0].'.jpg';
+            $fileLocation = '../storage/app/'.$filename;
+            $screenCapture->save($fileLocation);
+
+            $mime_type = 'image/jpeg';
+        }
+        
         //save into file entry table
         $fileEntry = FileEntry::create([
             'filename' => $filename,
-            'mime' => 'image/jpeg'
+            'mime' => $mime_type
         ]);
 
         //update meta
