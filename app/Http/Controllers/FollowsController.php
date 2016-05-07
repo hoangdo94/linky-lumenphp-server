@@ -121,17 +121,22 @@ class FollowsController extends Controller {
         $Follow = Follow::where('user_id', $id)->where('follower_id', $user->id)->delete();
 
         // update num follow
-        $user->num_followings = $user->num_followings - 1;
-        $user->save();
+        if ($Follow == 1) {
+            $user->num_followings = $user->num_followings - 1;
+            $user->save();
 
-        $another = User::find($id);
-        $another->num_followers = $another->num_followers - 1;
-        $another->save();
+            $another = User::find($id);
+            $another->num_followers = $another->num_followers - 1;
+            $another->save();
 
+            return response()->json([
+                'message' => 'Deleted Follow',
+                'status_code' => '200',
+                'data' => $Follow
+            ]);
+        }
         return response()->json([
-            'message' => 'Deleted Follow',
-            'status_code' => '200',
-            'data' => $Follow
+            'message' => 'Already deleted'
         ]);
     }
 
