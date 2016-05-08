@@ -34,11 +34,11 @@ class MetaController extends Controller {
 
         $link = $request->input('link');
 
-        $meta = Meta::where('link', $link)->first();
-
-        if ($meta) {
-            return response()->json($meta);
-        }
+        // $meta = Meta::where('link', $link)->first();
+        //
+        // if ($meta) {
+        //     return response()->json($meta);
+        // }
 
         $title = 'No title';
         $description = 'No description';
@@ -75,7 +75,7 @@ class MetaController extends Controller {
                     $url = $img[0]->src;
                 }
             }
-            
+
         }
 
         //need to save first, if we cannot get screenshot
@@ -127,7 +127,7 @@ class MetaController extends Controller {
 
             $mime_type = 'image/jpeg';
         }
-        
+
         //save into file entry table
         $fileEntry = FileEntry::create([
             'filename' => $filename,
