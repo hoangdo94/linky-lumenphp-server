@@ -12,23 +12,8 @@ use Screen\Capture;
 use Illuminate\Support\Facades\Log;
 use finfo;
 
-function checkLink($link){ 
-    flush(); 
-    $fp = @fopen($link, "r"); 
-    @fclose($fp); 
-    if (!$fp){ 
-        return false; 
-    }else{ 
-        return true; 
-    } 
-}
-
 function get_http_response_code($url) {
-    $headers = null;
-    if (checkLink($url))
-        $headers = get_headers($url);
-    else 
-        return 0;
+    $headers = get_headers($url);
     return substr($headers[0], 9, 3);
 }
 
@@ -65,16 +50,7 @@ class MetaController extends Controller {
 
         $isActive = get_http_response_code($link);
         //url is not active
-        if ($isActive == 0) {
-            $newMeta = Meta::create([
-              'link' => $link,
-              'title' => $title,
-              'description' => $description,
-              'thumb_id' => 1
-            ]);
-            return response()->json($newMeta);
-        }
-        else if ($isActive != '200')
+        if (get_http_response_code($link) != '200')
             $dom = false;
 
         if ($dom) {
@@ -101,7 +77,7 @@ class MetaController extends Controller {
             }
             
         }
-        
+
         //need to save first, if we cannot get screenshot
         $newMeta = Meta::create([
           'link' => $link,
@@ -115,7 +91,7 @@ class MetaController extends Controller {
             $url = $link.$url;
         }
 
-        if ($url != '' && get_http_response_code($url) == 200) {
+        if ($url != '' && get_http_response_code($url) == '200') {
             $file = file_get_contents($url);
             //get mime type of img
             $file_info = new finfo(FILEINFO_MIME_TYPE);
