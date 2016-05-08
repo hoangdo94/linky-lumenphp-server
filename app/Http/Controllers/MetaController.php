@@ -34,7 +34,7 @@ class MetaController extends Controller {
 
         // Request
 
-        $serviceUrl = 'http://localhost:8989/';
+        $serviceUrl = 'http://128.199.211.29:8989/';
         $data = array('link' => $link);
         $data_string = json_encode($data);
 
