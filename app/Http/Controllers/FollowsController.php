@@ -148,13 +148,11 @@ class FollowsController extends Controller {
 
         if ($check > 0)
             return response()->json([
-                'follow' => 1,
-                'message' => 'followed'
+                'following' => true
             ]);
         else
             return response()->json([
-                'follow' => 0,
-                'message' => 'not follow'
+                'following' => false
             ]);
     }
 }

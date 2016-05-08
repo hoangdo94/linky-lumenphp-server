@@ -40,7 +40,7 @@ $api->version('v1', ['namespace' => 'App\Http\Controllers'], function($api) {
 
       $api->post('follows', 'FollowsController@create');
       $api->get('follows', 'FollowsController@index');
-      $api->get('follows/{id}', 'FollowsController@get');
+      $api->get('follows/check/{id}', 'FollowsController@get');
       $api->delete('follows/{id}', 'FollowsController@delete');
 
       $api->get('likes', 'LikesController@index');
