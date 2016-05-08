@@ -12,6 +12,26 @@ use Screen\Capture;
 use Illuminate\Support\Facades\Log;
 use finfo;
 
+function checkLink($link){ 
+    flush(); 
+    $fp = @fopen($link, "r"); 
+    @fclose($fp); 
+    if (!$fp){ 
+        return false; 
+    }else{ 
+        return true; 
+    } 
+}
+
+function get_http_response_code($url) {
+    $headers = null;
+    if (checkLink($url))
+        $headers = get_headers($url);
+    else 
+        return 0;
+    return substr($headers[0], 9, 3);
+}
+
 class MetaController extends Controller {
 
     public function __construct() {
@@ -37,18 +57,51 @@ class MetaController extends Controller {
 
         $title = 'No title';
         $description = 'No description';
-        $dom = HtmlDomParser::file_get_html($link);
+        $url = '';
+        $filename = '';
+        $mime_type = '';
 
-        $titleElems = $dom->find('title');
-        if (count($titleElems) > 0) {
-          $title = $titleElems[0]->plaintext;
+        $dom = HtmlDomParser::str_get_html($link);
+
+        $isActive = get_http_response_code($link);
+        //url is not active
+        if ($isActive == 0) {
+            $newMeta = Meta::create([
+              'link' => $link,
+              'title' => $title,
+              'description' => $description,
+              'thumb_id' => 1
+            ]);
+            return response()->json($newMeta);
         }
+        else if ($isActive != '200')
+            $dom = false;
 
-        $descriptionElems = $dom->find('meta[name="description"]');
-        if (count($descriptionElems) > 0) {
-          $description = $descriptionElems[0]->content;
+        if ($dom) {
+            $dom->load(file_get_contents($link, false, null, -1));
+            $titleElems = $dom->find('title');
+            if (count($titleElems) > 0) {
+              $title = $titleElems[0]->plaintext;
+            }
+
+            $descriptionElems = $dom->find('meta[name="description"]');
+            if (count($descriptionElems) > 0) {
+              $description = $descriptionElems[0]->content;
+            }
+            //done getting metadata, now get first img or screenshot if no img found
+            $og = $dom->find('meta[property="og:image"]') ? $dom->find('meta[property="og:image"]') : $dom->find('meta[property="og:image:url"]');
+            if (count($og) > 0) {
+                $url = $og[0]->content;
+            }
+            else {
+                $img = $dom->find('img');
+                if (count($img) > 0) {
+                    $url = $img[0]->src;
+                }
+            }
+            
         }
-
+        
         //need to save first, if we cannot get screenshot
         $newMeta = Meta::create([
           'link' => $link,
@@ -57,48 +110,28 @@ class MetaController extends Controller {
           'thumb_id' => 1
         ]);
 
-        //done getting metadata, now get first img or screenshot if no img found
-        $og = $dom->find('meta[property="og:image"]') ? $dom->find('meta[property="og:image"]') : $dom->find('meta[property="og:image:url"]');
-        $img = $dom->find('img');
-        $filename = '';
-        $mime_type = '';
-        if (count($og) > 0) {
-            $file = file_get_contents($og[0]->content);
-            //get mime type of img
-            $file_info = new finfo(FILEINFO_MIME_TYPE);
-            $mime_type = $file_info->buffer($file);
-
-            //get filename
-            $url_arr = explode ('/', $og[0]->content);
-            $name = $url_arr[count($url_arr)-1];
-            $name_div = explode('.', $name);
-            $filename = '';
-            for ($i=0; $i < count($name_div) - 1; $i++) { 
-                $filename = $filename.$name_div[$i];
-            }
-            $img_type = $name_div[count($name_div)-1];
-
-            $filename = $filename.getdate()[0].'.'.$img_type;
-            $fileLocation = '../storage/app/'.$filename;
-            file_put_contents($fileLocation, $file);
+        if (strpos($url, 'http') !== false) {
+        } else {
+            $url = $link.$url;
         }
-        else if (count($img) > 0) {
-            $file = file_get_contents($img[0]->src);
+
+        if ($url != '' && get_http_response_code($url) == 200) {
+            $file = file_get_contents($url);
             //get mime type of img
             $file_info = new finfo(FILEINFO_MIME_TYPE);
             $mime_type = $file_info->buffer($file);
 
             //get filename
-            $url_arr = explode ('/', $img[0]->src);
+            $url_arr = explode ('/', $url);
             $name = $url_arr[count($url_arr)-1];
             $name_div = explode('.', $name);
             $filename = '';
-            for ($i=0; $i < count($name_div) - 1; $i++) { 
-                $filename = $filename.$name_div[$i];
-            }
-            $img_type = $name_div[count($name_div)-1];
 
-            $filename = $filename.getdate()[0].'.'.$img_type;
+            $img_type = $name_div[count($name_div)-1];
+            if (count($name_div) == 1)
+                $filename = 'screenshot'.getdate()[0];
+            else
+                $filename = 'screenshot'.getdate()[0].'.'.$img_type;
             $fileLocation = '../storage/app/'.$filename;
             file_put_contents($fileLocation, $file);
         }
