@@ -13,12 +13,20 @@ class UserTableSeeder extends Seeder
             'username' => 'admin',
             'email' => 'admin@linky.com',
             'password' => app('hash')->make('123123123'),
-            'isAdmin' => 1
+            'isAdmin' => 1,
+            'num_followers' => 1,
+            'num_followings' => 1,
+            'avatar_id' => 1,
+            'cover_id' => 1
         ]);
         DB::table('user')->insert([
             'username' => 'test',
             'email' => 'test@linky.com',
-            'password' => app('hash')->make('123123123')
+            'password' => app('hash')->make('123123123'),
+            'num_followers' => 1,
+            'num_followings' => 1,
+            'avatar_id' => 1,
+            'cover_id' => 1
         ]);
     }
 }
