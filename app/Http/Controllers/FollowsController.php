@@ -140,4 +140,21 @@ class FollowsController extends Controller {
         ]);
     }
 
+    public function get($id)
+    {
+        $user = Auth::user();
+
+        $check = Follow::where('user_id', $id)->where('follower_id', $user->id)->count();
+
+        if ($check > 0)
+            return response()->json([
+                'follow' => 1,
+                'message' => 'followed'
+            ]);
+        else
+            return response()->json([
+                'follow' => 0,
+                'message' => 'not follow'
+            ]);
+    }
 }
