@@ -5,5 +5,5 @@ use Illuminate\Database\Eloquent\Model;
 class Meta extends Model
 {
      protected $table = 'meta';
-     protected $fillable = ['link', 'thumb_id', 'title', 'description'];
+     protected $fillable = ['link', 'thumb_id', 'thumb_url', 'title', 'description'];
 }

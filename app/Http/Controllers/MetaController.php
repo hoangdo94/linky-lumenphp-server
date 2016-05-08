@@ -7,10 +7,6 @@ use App\FileEntry;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Dingo\Api\Exception\ResourceException;
-use Sunra\PhpSimple\HtmlDomParser;
-use Screen\Capture;
-use Illuminate\Support\Facades\Log;
-use finfo;
 
 function get_http_response_code($url) {
     $headers = get_headers($url);
@@ -34,108 +30,48 @@ class MetaController extends Controller {
 
         $link = $request->input('link');
 
-        // $meta = Meta::where('link', $link)->first();
-        //
-        // if ($meta) {
-        //     return response()->json($meta);
-        // }
+        $meta = Meta::where('link', $link)->first();
+        
+        if ($meta) {
+            return response()->json($meta);
+        }
 
-        $title = 'No title';
-        $description = 'No description';
-        $url = '';
+        $image = '';
         $filename = '';
         $mime_type = '';
 
-        $dom = HtmlDomParser::str_get_html($link);
+        $serviceUrl = 'http://128.199.211.29:8989/';
+        $data = array('link' => $link);
+        $data_string = json_encode($data);
+        $ch = curl_init($serviceUrl);
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_string);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+          'Content-Type: application/json',
+          'Content-Length: ' . strlen($data_string))
+        );
 
-        $isActive = get_http_response_code($link);
-        //url is not active
-        if (get_http_response_code($link) != '200')
-            $dom = false;
-
-        if ($dom) {
-            $dom->load(file_get_contents($link, false, null, -1));
-            $titleElems = $dom->find('title');
-            if (count($titleElems) > 0) {
-              $title = $titleElems[0]->plaintext;
-            }
-
-            $descriptionElems = $dom->find('meta[name="description"]');
-            if (count($descriptionElems) > 0) {
-              $description = $descriptionElems[0]->content;
-            }
-            //done getting metadata, now get first img or screenshot if no img found
-            $og = $dom->find('meta[property="og:image"]') ? $dom->find('meta[property="og:image"]') : $dom->find('meta[property="og:image:url"]');
-            if (count($og) > 0) {
-                $url = $og[0]->content;
-            }
-            else {
-                $img = $dom->find('img');
-                if (count($img) > 0) {
-                    $url = $img[0]->src;
-                }
-            }
-
-        }
-
+        $result = json_decode(curl_exec($ch));
+        $image = $result->image;
         //need to save first, if we cannot get screenshot
         $newMeta = Meta::create([
           'link' => $link,
-          'title' => $title,
-          'description' => $description,
-          'thumb_id' => 1
+          'title' => $result->title,
+          'description' => $result->description
         ]);
 
-        if (strpos($url, 'http') !== false) {
+        if (strpos($image, 'http') !== false) {
         } else {
-            $url = $link.$url;
+            $image = $link.$image;
         }
-
-        if ($url != '' && get_http_response_code($url) == '200') {
-            $file = file_get_contents($url);
-            //get mime type of img
-            $file_info = new finfo(FILEINFO_MIME_TYPE);
-            $mime_type = $file_info->buffer($file);
-
-            //get filename
-            $url_arr = explode ('/', $url);
-            $name = $url_arr[count($url_arr)-1];
-            $name_div = explode('.', $name);
-            $filename = '';
-
-            $img_type = $name_div[count($name_div)-1];
-            if (count($name_div) == 1)
-                $filename = 'screenshot'.getdate()[0];
-            else
-                $filename = 'screenshot'.getdate()[0].'.'.$img_type;
-            $fileLocation = '../storage/app/'.$filename;
-            file_put_contents($fileLocation, $file);
-        }
-        else {
-            $screenCapture = new Capture($link);
-
-            $screenCapture->setWidth(1200);
-            $screenCapture->setHeight(800);
-            $screenCapture->setClipWidth(1200);
-            $screenCapture->setClipHeight(800);
-
-            $screenCapture->setBackgroundColor('#ffffff');
-
-            $filename = 'screenshot'.getdate()[0].'.jpg';
-            $fileLocation = '../storage/app/'.$filename;
-            $screenCapture->save($fileLocation);
-
-            $mime_type = 'image/jpeg';
-        }
-
-        //save into file entry table
-        $fileEntry = FileEntry::create([
-            'filename' => $filename,
-            'mime' => $mime_type
-        ]);
 
         //update meta
-        $newMeta->thumb_id = $fileEntry->id;
+        if ($image)
+            $newMeta->thumb_url = $image;
+        else
+            $newMeta->thumb_id = 1;
+        
         $newMeta->save();
 
         return response()->json($newMeta);

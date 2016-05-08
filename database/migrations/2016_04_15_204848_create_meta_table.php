@@ -15,11 +15,12 @@ class CreateMetaTable extends Migration
         Schema::create('meta', function (Blueprint $table) {
             $table->increments('id');
             $table->string('link', 255);
-            $table->integer('thumb_id')->unsigned();
+            $table->integer('thumb_id')->unsigned()->nullable();
+            $table->string('thumb_url', 255);
             $table->string('title', 255)->default('No title');
             $table->string('description', 4000)->default('No description');
             $table->timestamps();
-            $table->foreign('thumb_id')->references('id')->on('file_entry')->onDelete('cascade');
+            $table->foreign('thumb_id')->references('id')->on('file_entry')->onDelete('set null');
         });
     }
 
