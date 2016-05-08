@@ -37,8 +37,6 @@ class MetaController extends Controller {
         }
 
         $image = '';
-        $filename = '';
-        $mime_type = '';
 
         $serviceUrl = 'http://128.199.211.29:8989/';
         $data = array('link' => $link);
